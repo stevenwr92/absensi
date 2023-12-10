@@ -7,8 +7,8 @@ import (
 
 func Migrate(db *gorm.DB) {
 
-	db.Migrator().DropTable(&models.User{})
-	db.Migrator().DropTable(&models.Attendance{})
+	// db.Migrator().DropTable(&models.User{})
+	// db.Migrator().DropTable(&models.Attendance{})
 
 	db.AutoMigrate(&models.User{})
 	db.AutoMigrate(&models.Attendance{})

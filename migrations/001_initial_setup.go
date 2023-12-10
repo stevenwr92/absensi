@@ -6,11 +6,10 @@ import (
 )
 
 func Migrate(db *gorm.DB) {
-	// Drop existing tables if they exist
-	// db.Migrator().DropTable(&models.User{})
-	// db.Migrator().DropTable(&models.Attendance{})
 
-	// AutoMigrate to create tables
+	db.Migrator().DropTable(&models.User{})
+	db.Migrator().DropTable(&models.Attendance{})
+
 	db.AutoMigrate(&models.User{})
 	db.AutoMigrate(&models.Attendance{})
 }

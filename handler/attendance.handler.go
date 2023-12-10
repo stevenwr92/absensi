@@ -20,17 +20,6 @@ func ClockIn(c *fiber.Ctx) error {
 	// ip := c.IP()
 	ip := "202.80.216.43"
 
-	response, err := utils.HitGeoApi(ip)
-	if err != nil {
-		return utils.SendErrorResponse(c, fiber.StatusBadRequest, err.Error())
-	}
-
-	responses := Response{}
-
-	if err := json.Unmarshal(response.Body(), &responses); err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": "Failed to parse response"})
-	}
-
 	claims := c.Locals("user").(*jwt.Token).Claims.(jwt.MapClaims)
 	userID := int(claims["Id"].(float64))
 
@@ -41,6 +30,17 @@ func ClockIn(c *fiber.Ctx) error {
 		Where("user_id = ? AND DATE(clock_in) = ?", userID, today).
 		First(&existingAttendance).Error; err == nil {
 		return utils.SendErrorResponse(c, fiber.StatusBadRequest, "You have already clocked in for today")
+	}
+
+	response, err := utils.HitGeoApi(ip)
+	if err != nil {
+		return utils.SendErrorResponse(c, fiber.StatusBadRequest, err.Error())
+	}
+
+	responses := Response{}
+
+	if err := json.Unmarshal(response.Body(), &responses); err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "Failed to parse response"})
 	}
 
 	clockInTime := time.Now()
@@ -67,17 +67,6 @@ func ClockOut(c *fiber.Ctx) error {
 
 	ip := "202.80.216.43"
 
-	response, err := utils.HitGeoApi(ip)
-	if err != nil {
-		return utils.SendErrorResponse(c, fiber.StatusBadRequest, err.Error())
-	}
-
-	responses := Response{}
-
-	if err := json.Unmarshal(response.Body(), &responses); err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": "Failed to parse response"})
-	}
-
 	claims := c.Locals("user").(*jwt.Token).Claims.(jwt.MapClaims)
 	userID := int(claims["Id"].(float64))
 
@@ -92,6 +81,17 @@ func ClockOut(c *fiber.Ctx) error {
 
 	if existingAttendance.ClockOut != nil {
 		return utils.SendErrorResponse(c, fiber.StatusBadRequest, "You have already clocked out for today")
+	}
+
+	response, err := utils.HitGeoApi(ip)
+	if err != nil {
+		return utils.SendErrorResponse(c, fiber.StatusBadRequest, err.Error())
+	}
+
+	responses := Response{}
+
+	if err := json.Unmarshal(response.Body(), &responses); err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "Failed to parse response"})
 	}
 
 	clockOut := time.Now()
